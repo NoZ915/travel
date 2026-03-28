@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TripCard from '../components/TripCard.astro';
+import { getCollection } from 'astro:content';
+
+const trips = (await getCollection('trips')).sort(
+  (a, b) => new Date(b.data.startDate).getTime() - new Date(a.data.startDate).getTime()
+);
+
+const totalDays = trips.reduce((sum, t) => {
+  const s = new Date(t.data.startDate);
+  const e = new Date(t.data.endDate);
+  return sum + Math.ceil((e.getTime() - s.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+}, 0);
+
+const countries = [...new Set(trips.map((t) => t.data.country))];
+---
+
+<BaseLayout title="旅遊紀錄 — 記錄每一段旅程">
+  <section class="hero">
+    <h1 class="hero-title">旅遊紀錄</h1>
+    <p class="hero-desc">記錄每一段旅程的風景與回憶</p>
+    <div class="hero-stats">
+      <span><strong>{trips.length}</strong> 趟旅程</span>
+      <span class="hero-dot">&middot;</span>
+      <span><strong>{countries.length}</strong> 個國家</span>
+      <span class="hero-dot">&middot;</span>
+      <span><strong>{totalDays}</strong> 天旅行</span>
+    </div>
+  </section>
+
+  <section class="trips-section">
+    <h2 class="section-title">所有旅程</h2>
+    <div class="trips-grid">
+      {trips.map((trip) => (
+        <TripCard
+          slug={trip.id}
+          title={trip.data.title}
+          description={trip.data.description}
+          destination={trip.data.destination}
+          country={trip.data.country}
+          startDate={trip.data.startDate}
+          endDate={trip.data.endDate}
+          coverImage={trip.data.coverImage}
+          tags={trip.data.tags}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-desc {
+    color: var(--color-text-light);
+    font-size: 1.05rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-stats {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+  }
+
+  .hero-stats strong {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  .hero-dot {
+    color: var(--color-border);
+  }
+
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--color-accent);
+    display: inline-block;
+  }
+
+  .trips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .trips-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

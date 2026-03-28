@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TripCard from '../../components/TripCard.astro';
+import { getCollection } from 'astro:content';
+
+const trips = (await getCollection('trips')).sort(
+  (a, b) => new Date(b.data.startDate).getTime() - new Date(a.data.startDate).getTime()
+);
+---
+
+<BaseLayout title="所有旅程 — 旅遊紀錄" description="瀏覽所有旅行紀錄">
+  <h1 class="page-title">所有旅程</h1>
+  <p class="page-desc">共 <strong>{trips.length}</strong> 趟旅程</p>
+
+  <div class="trips-grid">
+    {trips.map((trip) => (
+      <TripCard
+        slug={trip.id}
+        title={trip.data.title}
+        description={trip.data.description}
+        destination={trip.data.destination}
+        country={trip.data.country}
+        startDate={trip.data.startDate}
+        endDate={trip.data.endDate}
+        coverImage={trip.data.coverImage}
+        tags={trip.data.tags}
+      />
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .page-desc {
+    color: var(--color-text-light);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .page-desc strong {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  .trips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .trips-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
