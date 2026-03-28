@@ -418,3 +418,17 @@
 - 狀態：completed
 - 輸出 / 異動檔案：`INSTRUCTIONS.md`（追加紀錄）
 - 下一步：依使用者指示優先修正 site URL 與分支名稱不一致問題。
+
+## 紀錄：2026-03-28 00:05
+
+- 日期：2026-03-28
+- 時區：Asia/Taipei
+- 使用者指令：提供 GitHub repo 連結 `https://github.com/NoZ915/travel/tree/main`，確認帳號與 repo 名稱。
+- 任務類型：code
+- 建議執行者：Claude
+- 判斷原因：需要根據實際 GitHub 資訊修正 Astro 設定檔中的 site URL 與 base path。
+- 執行備註：將 `astro.config.mjs` 的 `site` 從 `https://your-username.github.io` 改為 `https://noz915.github.io`，`base` 從 `/travel-claude-gpt/` 改為 `/travel/`，對應實際 repo 名稱。
+- 最後決策：本段指令與決策由 `Claude` 進行。
+- 狀態：completed
+- 輸出 / 異動檔案：`astro.config.mjs`、`INSTRUCTIONS.md`（追加紀錄）
+- 下一步：推上 `main` 分支觸發 GitHub Actions 部署。
